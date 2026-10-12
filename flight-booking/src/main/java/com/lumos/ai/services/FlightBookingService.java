@@ -1,9 +1,9 @@
-package com.xs.ai.services;
+package com.lumos.ai.services;
 
 
-import com.xs.ai.data.*;
+import com.lumos.ai.data.*;
 import org.springframework.stereotype.Service;
-import com.xs.ai.services.BookingTools.BookingDetails;
+import com.lumos.ai.services.BookingTools.BookingDetails;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

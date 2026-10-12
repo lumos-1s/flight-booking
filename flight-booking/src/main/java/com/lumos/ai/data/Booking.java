@@ -1,4 +1,4 @@
-package com.xs.ai.data;
+package com.lumos.ai.data;
 
 import java.time.LocalDate;
 

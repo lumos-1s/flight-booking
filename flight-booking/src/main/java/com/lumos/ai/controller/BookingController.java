@@ -1,10 +1,8 @@
-package com.xs.ai.controller;
+package com.lumos.ai.controller;
 
 
-import com.xs.ai.services.BookingTools;
-import com.xs.ai.services.BookingTools.BookingDetails;
-import com.xs.ai.services.FlightBookingService;
-import org.springframework.http.MediaType;
+import com.lumos.ai.services.BookingTools.BookingDetails;
+import com.lumos.ai.services.FlightBookingService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

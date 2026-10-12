@@ -1,4 +1,4 @@
-package com.xs.ai;
+package com.lumos.ai;
 
 // 阿里百炼 starter 已在 pom 中注释（教程改用 Spring AI 官方 deepseek/openai starter），相关 import 暂时停用
 // import com.alibaba.cloud.ai.dashscope.agent.DashScopeAgent;

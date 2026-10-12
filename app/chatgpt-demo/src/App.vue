@@ -41,12 +41,41 @@
             :modal="false"
             :show-close="false"
             :wrapperClosable="false"
-            size="100%"
-            :visible.sync="drawer"
+            size="320px"
+            v-model="drawer"
             direction="ltr"
         >
           <el-card class="box-card" style="position: relative">
-            <div>左侧内容</div>
+            <template #header>
+              <b>知识库管理</b>
+            </template>
+
+            <!-- 统计 -->
+            <el-descriptions :column="2" border size="small">
+              <el-descriptions-item label="分块数">{{ kbStats.chunkCount }}</el-descriptions-item>
+              <el-descriptions-item label="总字符">{{ kbStats.totalChars }}</el-descriptions-item>
+            </el-descriptions>
+
+            <!-- 检索测试 -->
+            <div style="margin: 10px 0; display: flex; gap: 6px">
+              <el-input v-model="kbQuery" placeholder="检索测试，如：行李超重" clearable size="small"
+                        @keydown.enter="kbSearch" />
+              <el-button size="small" type="primary" @click="kbSearch">检索</el-button>
+              <el-button size="small" @click="kbRefresh">刷新</el-button>
+            </div>
+
+            <!-- 命中结果 -->
+            <el-collapse v-if="kbResults.length" style="margin-bottom: 10px">
+              <el-collapse-item v-for="(r, i) in kbResults" :key="i" :title="'命中 ' + (i + 1) + ' · ' + r.id">
+                <span style="white-space: pre-wrap; font-size: 13px">{{ r.content }}</span>
+              </el-collapse-item>
+            </el-collapse>
+
+            <!-- 新增知识 -->
+            <el-divider content-position="left">新增知识</el-divider>
+            <el-input v-model="kbNewContent" type="textarea" :rows="3"
+                      placeholder="输入新规则，如：宠物托运需提前 48 小时申请" />
+            <el-button size="small" type="success" style="margin-top: 6px" @click="kbAdd">提交入库</el-button>
           </el-card>
         </el-drawer>
         <div
@@ -197,7 +226,6 @@ export default {
     const getBookings = () => {
       axios.get('http://localhost:8080/booking/list')
           .then((response) => {
-            debugger;
             tableData.value = response.data;
           })
           .catch((error) => {
@@ -205,18 +233,46 @@ export default {
           });
     };
 
-    // Use onMounted to call getBookings when the component is mounted
+    const kbStats = ref({ chunkCount: 0, totalChars: 0 });
+    const kbQuery = ref('');
+    const kbResults = ref([]);
+    const kbNewContent = ref('');
+
+// 加载统计
+    const loadKbStats = () => {
+      axios.get('http://localhost:8080/kb/stats')
+          .then(r => { kbStats.value = r.data; })
+          .catch(e => console.error(e));
+    };
+
+// 检索测试
+    const kbSearch = () => {
+      axios.get('http://localhost:8080/kb/search', { params: { q: kbQuery.value, topK: 3 } })
+          .then(r => { kbResults.value = r.data; })
+          .catch(e => console.error(e));
+    };
+
+// 新增知识
+    const kbAdd = () => {
+      if (!kbNewContent.value.trim()) return;
+      axios.post('http://localhost:8080/kb/add', { content: kbNewContent.value })
+          .then(() => { kbNewContent.value = ''; loadKbStats(); })
+          .catch(e => console.error(e));
+    };
+
+// 刷新（重新统计）
+    const kbRefresh = () => loadKbStats();
+
+// onMounted 里追加 loadKbStats()
     onMounted(() => {
       getBookings();
+      loadKbStats();
     });
 
+// return 里追加
     return {
-      activities,
-      msg,
-      tableData,
-      sendMsg,
-      getBookings,
-      renderMarkdown,
+      activities, msg, tableData, sendMsg, getBookings, renderMarkdown,
+      kbStats, kbQuery, kbResults, kbNewContent, kbSearch, kbAdd, kbRefresh,
     };
   },
 };
@@ -227,6 +283,7 @@ function getUserId() {
     localStorage.setItem('chat_user_id', uid);
   }
   return uid;
+
 }
 
 </script>

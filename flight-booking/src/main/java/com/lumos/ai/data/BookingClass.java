@@ -1,4 +1,4 @@
-package com.xs.ai.data;
+package com.lumos.ai.data;
 
 public enum BookingClass {
 

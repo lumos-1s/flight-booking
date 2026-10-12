@@ -1,27 +1,20 @@
-package com.xs.ai.data;
+package com.lumos.ai.data;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Customer {
+public class BookingData {
 
-	private String name;
+	private List<Customer> customers = new ArrayList<>();
 
 	private List<Booking> bookings = new ArrayList<>();
 
-	public Customer() {
+	public List<Customer> getCustomers() {
+		return customers;
 	}
 
-	public Customer(String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	public void setCustomers(List<Customer> customers) {
+		this.customers = customers;
 	}
 
 	public List<Booking> getBookings() {

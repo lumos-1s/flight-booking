@@ -1,4 +1,4 @@
-package com.xs.ai.services;
+package com.lumos.ai.services;
 
 import org.springframework.ai.chat.client.ChatClientRequest;
 import org.springframework.ai.chat.client.ChatClientResponse;

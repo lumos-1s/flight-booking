@@ -1,23 +1,19 @@
-package com.xs.ai;
+package com.lumos.ai;
 
-import com.xs.ai.services.BookingTools;
-import com.xs.ai.services.MyLoggingAdvisor;
+import com.lumos.ai.services.BookingTools;
+import com.lumos.ai.services.MyLoggingAdvisor;
 import org.springaicommunity.agent.tools.*;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.ToolCallingAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
-import org.springframework.ai.chat.memory.ChatMemoryRepository;
-import org.springframework.ai.chat.memory.InMemoryChatMemoryRepository;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.deepseek.DeepSeekChatModel;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.EmbeddingModel;
-import org.springframework.ai.openai.OpenAiEmbeddingModel;
 import org.springframework.ai.reader.TextReader;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
-import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,9 +25,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * @author xushu
@@ -121,25 +115,6 @@ public class SpringAiDemoApplication {
     @Bean
     public VectorStore vectorStore(@Qualifier("openAiEmbeddingModel") EmbeddingModel embeddingModel){
         return SimpleVectorStore.builder(embeddingModel).build();
-    }
-    @Bean
-    public CommandLineRunner loadRagDocs(VectorStore vectorStore){
-        return args -> {
-            Resource resource = new ClassPathResource("rag/terms-of-service.txt");
-            TextReader reader = new TextReader(resource);
-            TokenTextSplitter tokenTextSplitter = TokenTextSplitter.builder()
-                    .withChunkSize(250)          // 每块 250 token
-                    .withMinChunkSizeChars(100)  // 最短块 100 字符
-                    .withMinChunkLengthToEmbed(50) // 少于 50 字符不入库
-
-                    .withKeepSeparator(true)     // 保留分隔符
-                    .build();
-
-
-            List<Document> docs = tokenTextSplitter.apply(reader.get());
-            vectorStore.add(docs);
-            System.out.println(">>> RAG知识库加载完成，共" + docs.size() + "个分块");
-        };
     }
 
 
